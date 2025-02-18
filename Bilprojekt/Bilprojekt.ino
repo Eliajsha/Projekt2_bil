@@ -1,126 +1,108 @@
-// skapa alla variabler som är globala
-int hogermotor = 9;
-int vanstermotor = 8;
+/*
+  File: Bilprojekt
+  Author: Elias Svensson
+  Date: 2025-02-18
+  Description: This program makes a car with 2 engines drive by itself.
+*/
+
+// creates all the variables
+int rightEngine = 8;
+int leftEngine = 9;
 const int sensorPinRight = 2;
 const int sensorPinFrontRight = 3;
 const int sensorPinFrontLeft = 4;
 const int sensorPinLeft = 5;
-int wallRight;
-int wallLeft;
-int wallFrontRight;
-int wallFrontLeft;
+bool wallRight;
+bool wallLeft;
+bool wallFrontRight;
+bool wallFrontLeft;
 
-// starta alla pins som styr motorerna samt tar in info från sensorerna
+// starting all the sensors and engines
 void setup() {
-  pinMode(hogermotor, OUTPUT);
-  pinMode(vanstermotor, OUTPUT);
+  pinMode(rightEngine, OUTPUT);
+  pinMode(leftEngine, OUTPUT);
   pinMode(sensorPinRight, INPUT);
   pinMode(sensorPinFrontRight, INPUT);
   pinMode(sensorPinFrontLeft, INPUT);
   pinMode(sensorPinLeft, INPUT);
 }
 
-// kalla på alla funktioner som ska köras
+// runnning the functions
 void loop() {
-  rightSensor();
-  frontSensorRight();
-  frontSensorLeft();
-  leftSensor();
-  Gas();
-  /*hogerGas();
-  vansterGas();*/
+  rightSensor();          // function for sensor to the right
+  frontSensorRight();     // function for front right sensor
+  frontSensorLeft();      // function for front left sensor
+  leftSensor();           // function for sensor to the left
+  Gas();                  // function for driving the engines
 }
 
-// den här funktionen kollar om det finns ett hinder till högor om bilen. Om det gör det sätter den variabeln till true, annars false
- void rightSensor() {
+void rightSensor() {
   int sensorValueRight = digitalRead(sensorPinRight);
   if (sensorValueRight == LOW) {
-    wallRight = true;
+    wallRight = true; //if tg
   } else {
     wallRight = false;
   }
- }
+}
 
 // den här funktionen kollar om det finns ett hinder framför bilen. Om det gör det sätter den variabeln till true, annars false
-  void frontSensorRight() {
+void frontSensorRight() {
   int sensorValueFront = digitalRead(sensorPinFrontRight);
   if (sensorValueFront == LOW) {
     wallFrontRight = true;
   } else {
     wallFrontRight = false;
   }
- }
+}
 
-  void frontSensorLeft() {
+void frontSensorLeft() {
   int sensorValueFront = digitalRead(sensorPinFrontLeft);
   if (sensorValueFront == LOW) {
     wallFrontLeft = true;
   } else {
     wallFrontLeft = false;
   }
- }
+}
 
 
 // den här funktionen kollar om det finns ett hinder till vänster om bilen. Om det gör det sätter den variabeln till true, annars false
-  void leftSensor() {
+void leftSensor() {
   int sensorValueLeft = digitalRead(sensorPinLeft);
   if (sensorValueLeft == LOW) {
     wallLeft = true;
   } else {
     wallLeft = false;
   }
-  Serial.println(wallLeft);
-  delay(200);
- }
+}
 
-/*den här funktionen styr högermotorn till bilen. Om sensorn framför bilen upptäcker ett hinder så stoppar den motorn, och om det finns vägg 
-framför och till vänster om bilen stoppar den oxå motorn 
-
- void hogerGas() {
-  if (wallFront == false) {
-    digitalWrite(hogermotor, HIGH);
-  } else {
-    digitalWrite(hogermotor, LOW);
-  }
-
-/* TILL NÄSTA GÅNG!
-  kolla nästa gång om det bortkommenterade är korrekt eller inte. 
-  Möjligtvis oxå göra så att båda motorerna bara har en funktion istället för 2 
+void Gas() {
   if (wallLeft == true) {
-    digitalWrite(hogermotor, LOW);
+    digitalWrite(leftEngine, HIGH);
+    digitalWrite(rightEngine, LOW);
+    delay(300);
+  } else if (wallFrontLeft == true) {
+    digitalWrite(leftEngine, HIGH);
+    digitalWrite(rightEngine, LOW);
+    delay(300);
+  } else if (wallFrontRight == true) {
+    digitalWrite(leftEngine, LOW);
+    digitalWrite(rightEngine, HIGH);
+    delay(300);
+  } else if (wallRight == true) {
+    digitalWrite(leftEngine, LOW);
+    digitalWrite(rightEngine, HIGH);
+    delay(300);
+  } else if (wallFrontLeft == true && wallFrontRight == true) {
+    digitalWrite(leftEngine, HIGH);
+    digitalWrite(rightEngine, LOW);
   }
- }
+  else {
+    digitalWrite(leftEngine, HIGH);
+    digitalWrite(rightEngine, HIGH);
+    delay(300);
+  }
+  digitalWrite(leftEngine, LOW);
+  digitalWrite(rightEngine, LOW);
+  delay(100);
 
-/*den här funktionen styr vänstermotorn till bilen. Om sensorn framför bilen upptäcker ett hinder så stoppar den motorn, och om det finns vägg 
-framför och till höger om bilen stoppar den oxå motorn 
- void vansterGas () {
-    if (wallFront == false) {
-    digitalWrite(vanstermotor, HIGH);
-  } else {
-    digitalWrite(vanstermotor, LOW);
-  }
-
-  if (wallRight == true) {
-    digitalWrite(vanstermotor, LOW);
-  }
- }
- */
- void Gas() {
-  if (wallFrontRight == false && wallFrontLeft == false) {
-    digitalWrite(vanstermotor, HIGH);
-    digitalWrite(hogermotor, HIGH);
-  } else {
-    digitalWrite(vanstermotor, LOW);
-    digitalWrite(hogermotor, LOW);
-  }
-  if (wallRight == true ) {
-    digitalWrite(vanstermotor, LOW);
-  }
-    
-  if (wallLeft == true) {
-    digitalWrite(hogermotor, LOW);
-  }
- }
-
-
-
+}
